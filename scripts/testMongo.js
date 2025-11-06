@@ -39,21 +39,33 @@ async function main() {
     console.error('MONGO_URI contains placeholder brackets <>. Replace with the actual password and remove <>.');
     process.exit(1);
   }
+  const tlsEnv = String(process.env.MONGO_TLS || '').toLowerCase();
+  const tlsOn = tlsEnv === 'true' || /mongodb\+srv:/i.test(uri) || /mongodb\.net/i.test(uri);
+  const allowInvalid = String(process.env.MONGO_TLS_ALLOW_INVALID || 'false').toLowerCase() === 'true';
+  const isSrv = /mongodb\+srv:/i.test(uri);
   console.log('Testing connection to MongoDB...');
+  console.log(`Config summary: isSrv=${isSrv} tls=${tlsOn} allowInvalid=${allowInvalid} dbName=${dbName || '(none)'}`);
   try {
-    await mongoose.connect(uri, {
+    const connOpts = {
       serverSelectionTimeoutMS: 8000,
-      dbName: dbName || undefined
-    });
+      dbName: dbName || undefined,
+      tls: tlsOn,
+      ssl: tlsOn,
+      tlsAllowInvalidCertificates: allowInvalid
+    };
+    if (!isSrv) connOpts.directConnection = true;
+    await mongoose.connect(uri, connOpts);
     console.log('✅ Connected to MongoDB');
   } catch (err) {
     console.error('❌ Connection failed:', err.message);
     console.error('Hints:');
     console.error('- Ensure your password is correct and not wrapped with <>');
     console.error('- If your password has special chars (@:/?&), URL-encode them');
-    console.error('- In MongoDB Atlas, add your IP to Network Access');
+    console.error('- In MongoDB Atlas, add your IP to Network Access (or temporary 0.0.0.0/0)');
     console.error('- Confirm user tmek_db_user has readWrite on your database');
     console.error('- Try adding a database name: MONGO_DB_NAME=sflrp');
+    console.error('- For SRV URIs, do NOT force directConnection');
+    console.error('- If using self-signed certs, test with MONGO_TLS_ALLOW_INVALID=true');
     process.exit(1);
   } finally {
     await mongoose.disconnect();
