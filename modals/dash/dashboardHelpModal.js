@@ -43,14 +43,16 @@ const {
             const tlsEnv = String(process.env.MONGO_TLS || '').toLowerCase();
             const tlsOn = tlsEnv === 'true' || /mongodb\.net|mongodb\+srv:/i.test(uri || '');
             const allowInvalid = String(process.env.MONGO_TLS_ALLOW_INVALID || 'false').toLowerCase() === 'true';
-            await mongoose.connect(uri, {
+            const isSrv = /mongodb\+srv:/i.test(uri || '');
+            const connOpts = {
               serverSelectionTimeoutMS: timeoutMs,
               dbName: process.env.MONGO_DB_NAME || undefined,
-              directConnection: true,
               tls: tlsOn,
               ssl: tlsOn,
               tlsAllowInvalidCertificates: allowInvalid
-            });
+            };
+            if (!isSrv) connOpts.directConnection = true;
+            await mongoose.connect(uri, connOpts);
             return mongoose.connection.readyState === 1;
           } catch (err) {
             console.warn('MongoDB connect attempt failed:', err?.message || err);
