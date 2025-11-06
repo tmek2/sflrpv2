@@ -343,16 +343,20 @@ client.on('interactionCreate', async (interaction) => {
       const tlsEnv = String(process.env.MONGO_TLS || '').toLowerCase();
       const tlsOn = tlsEnv === 'true' || /mongodb\.net|mongodb\+srv:/i.test(MONGO_URI);
       const allowInvalid = String(process.env.MONGO_TLS_ALLOW_INVALID || 'false').toLowerCase() === 'true';
+      const isSrv = /mongodb\+srv:/i.test(MONGO_URI);
 
       const connOpts = {
         serverSelectionTimeoutMS: 8000,
         dbName: MONGO_DB_NAME || undefined,
-        directConnection: true,
         // Node driver accepts either `tls` or `ssl`
         tls: tlsOn,
         ssl: tlsOn,
         tlsAllowInvalidCertificates: allowInvalid
       };
+      // `directConnection` is not supported for SRV URIs
+      if (!isSrv) {
+        connOpts.directConnection = true;
+      }
 
       await mongoose.connect(MONGO_URI, connOpts);
       console.log('Connected to MongoDB');
