@@ -36,10 +36,21 @@ async function ensureDb(timeoutMs = 8000) {
   if (!process.env.MONGO_URI) return false;
   if (mongoose.connection.readyState === 1) return true;
   try {
-    await mongoose.connect(process.env.MONGO_URI, { serverSelectionTimeoutMS: timeoutMs });
+    const uri = process.env.MONGO_URI;
+    const tlsEnv = String(process.env.MONGO_TLS || '').toLowerCase();
+    const tlsOn = tlsEnv === 'true' || /mongodb\.net|mongodb\+srv:/i.test(uri || '');
+    const allowInvalid = String(process.env.MONGO_TLS_ALLOW_INVALID || 'false').toLowerCase() === 'true';
+    await mongoose.connect(uri, {
+      serverSelectionTimeoutMS: timeoutMs,
+      dbName: process.env.MONGO_DB_NAME || undefined,
+      directConnection: true,
+      tls: tlsOn,
+      ssl: tlsOn,
+      tlsAllowInvalidCertificates: allowInvalid
+    });
     return mongoose.connection.readyState === 1;
   } catch (err) {
-    console.warn('MongoDB connect attempt failed:', err.message);
+    console.warn('MongoDB connect attempt failed:', err?.message || err);
     return false;
   }
 }
