@@ -1,6 +1,7 @@
 const { SlashCommandBuilder, EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags } = require('discord.js');
 const crypto = require('crypto');
 const { ephemeralEmoji } = require('../utils/emoji');
+const { requireRole } = require('../utils/roleGate');
 const axios = require('axios');
 const AXIOS_TIMEOUT_MS = Number(process.env.PRC_TIMEOUT_MS || 10000);
 const sessionStatusPanel = require('../panels/sessionStatusPanel');
@@ -67,10 +68,9 @@ module.exports = {
 		const user = interaction.user;
 
 		// Simple permission check like the dash command
-		const member = interaction.member;
-    if (SESSIONS_REQUIRED_ROLE_ID && !member.roles.cache.has(SESSIONS_REQUIRED_ROLE_ID)) {
-      return interaction.reply({ content: `${ephemeralEmoji('permission')} You don’t have permission to use /sessions.`, flags: MessageFlags.Ephemeral });
-    }
+    // Use shared role gate; supports one or multiple role IDs (comma/space separated)
+    const hasAccess = await requireRole(interaction, SESSIONS_REQUIRED_ROLE_ID);
+    if (!hasAccess) return;
 
     if (!channel) {
       return interaction.reply({ content: `${ephemeralEmoji('not_found')} Sessions channel not found. Please check configuration.`, flags: MessageFlags.Ephemeral });
