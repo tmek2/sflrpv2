@@ -1,0 +1,21 @@
+services:
+  - type: worker
+    name: sflrp-bot
+    env: node
+    plan: free
+    autoDeploy: true
+    buildCommand: npm install
+    startCommand: node index.js
+    envVars:
+      - key: DISCORD_TOKEN
+        sync: false
+      - key: MONGO_URI
+        sync: false
+      - key: MONGO_DB_NAME
+        sync: false
+      - key: PRC_KEY
+        sync: false
+      - key: PREFIX_REQUIRED_ROLE_ID
+        sync: false
+      - key: PREFIX_PR_CHANNEL_ID
+        sync: false
