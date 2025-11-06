@@ -44,7 +44,10 @@ module.exports = {
         management: ROLE_MANAGEMENT_ID
       };
       const requiredTypeRole = typeRoleMap[ticket.type] || '';
-      const allowedRoles = [GLOBAL_SUPPORT_ROLE_ID, requiredTypeRole].filter(Boolean);
+      const allowedRoles = [
+        ...String(GLOBAL_SUPPORT_ROLE_ID).split(/[\s,]+/),
+        ...String(requiredTypeRole).split(/[\s,]+/)
+      ].filter(Boolean);
       const hasAllowed = allowedRoles.some((rid) => member.roles.cache.has(rid));
       if (!hasAllowed) {
         return interaction.reply({
