@@ -334,12 +334,24 @@ client.on('interactionCreate', async (interaction) => {
   try {
     if (MONGO_URI) {
       mongoose.connection.on('connected', () => console.log('MongoDB connected'));
-      mongoose.connection.on('error', (err) => console.error('MongoDB error:', err.message));
+      mongoose.connection.on('error', (err) => {
+        console.error('MongoDB error:', err?.message || err);
+      });
       mongoose.connection.on('disconnected', () => console.warn('MongoDB disconnected'));
+
+      // TLS/SSL options: auto-enable for Atlas/SRV, configurable via env
+      const tlsEnv = String(process.env.MONGO_TLS || '').toLowerCase();
+      const tlsOn = tlsEnv === 'true' || /mongodb\.net|mongodb\+srv:/i.test(MONGO_URI);
+      const allowInvalid = String(process.env.MONGO_TLS_ALLOW_INVALID || 'false').toLowerCase() === 'true';
 
       const connOpts = {
         serverSelectionTimeoutMS: 8000,
-        dbName: MONGO_DB_NAME || undefined
+        dbName: MONGO_DB_NAME || undefined,
+        directConnection: true,
+        // Node driver accepts either `tls` or `ssl`
+        tls: tlsOn,
+        ssl: tlsOn,
+        tlsAllowInvalidCertificates: allowInvalid
       };
 
       await mongoose.connect(MONGO_URI, connOpts);
@@ -353,14 +365,13 @@ client.on('interactionCreate', async (interaction) => {
       console.log('MONGO_URI not set; ticket persistence will be skipped.');
     }
   } catch (err) {
-    console.warn('MongoDB connection failed:', err.message);
+    console.warn('MongoDB connection failed:', err?.message || err);
+    try {
+      console.warn(`Node ${process.version} OpenSSL ${process.versions?.openssl || 'unknown'}`);
+    } catch {}
   }
   await client.login(TOKEN);
 })();
 
 process.on('unhandledRejection', (err) => console.error('Unhandled rejection:', err));
 process.on('uncaughtException', (err) => console.error('Uncaught exception:', err));
-
-process.on('unhandledRejection', (err) => console.error('Unhandled rejection:', err));
-process.on('uncaughtException', (err) => console.error('Uncaught exception:', err));
-
