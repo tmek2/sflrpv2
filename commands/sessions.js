@@ -216,7 +216,7 @@ module.exports = {
                 // Duplicate the ping tag (matching original behavior) if configured
                 const pollPing = SESSIONS_PING_ROLE_ID ? `<@&${SESSIONS_PING_ROLE_ID}>` : '';
                 await channel.send({
-                    content: pollPing ? `${pollPing} | ${pollPing}` : '@here',
+                    content: pollPing ? `${pollPing} | @here` : '@here',
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Session Poll')
