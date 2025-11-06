@@ -118,6 +118,7 @@ const {
           general: HELP_SUPPORT_ROLE_GENERAL_ID || SUPPORT_ROLE_ID
         };
         const supportRoleId = roleMap[ticketType] || SUPPORT_ROLE_ID;
+        const supportRoleIds = String(supportRoleId).split(/[\s,]+/).filter(Boolean);
         const ticketCategoryId = TICKET_CATEGORY_ID;
         const namePrefix = 'general';
         const channelName = `${namePrefix}-${opener.username}`;
@@ -132,9 +133,9 @@ const {
             allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]
           }
         ];
-        if (supportRoleId) {
+        for (const rid of supportRoleIds) {
           overwrites.push({
-            id: supportRoleId,
+            id: rid,
             allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages]
           });
         }
