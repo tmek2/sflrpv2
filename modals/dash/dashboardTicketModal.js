@@ -86,6 +86,7 @@ module.exports = {
         management: HELP_SUPPORT_ROLE_MANAGEMENT_ID || SUPPORT_ROLE_ID
       };
       const supportRoleId = roleMap[ticketType] || SUPPORT_ROLE_ID;
+      const supportRoleIds = String(supportRoleId).split(/[\s,]+/).filter(Boolean);
       const ticketCategoryId = ticketType === 'management' ? MANAGEMENT_CATEGORY_ID : GENERAL_CATEGORY_ID;
       const namePrefix = ticketType;
       const channelName = `${namePrefix}-${opener.username}`;
@@ -94,8 +95,8 @@ module.exports = {
         { id: guild.roles.everyone.id, deny: [PermissionFlagsBits.ViewChannel] },
         { id: opener.id, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] }
       ];
-      if (supportRoleId) {
-        overwrites.push({ id: supportRoleId, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] });
+      for (const rid of supportRoleIds) {
+        overwrites.push({ id: rid, allow: [PermissionFlagsBits.ViewChannel, PermissionFlagsBits.SendMessages] });
       }
 
       const createOpts = { name: channelName, type: ChannelType.GuildText, permissionOverwrites: overwrites };
