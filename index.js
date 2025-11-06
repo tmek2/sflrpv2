@@ -1,3 +1,20 @@
+// Health check HTTP server
+const http = require('http');
+const PORT = process.env.PORT || 3000;
+
+http
+  .createServer((req, res) => {
+    if (req.url === '/healthz') {
+      res.writeHead(200, { 'Content-Type': 'text/plain' });
+      return res.end('ok');
+    }
+    res.writeHead(200, { 'Content-Type': 'text/plain' });
+    res.end('bot running');
+  })
+  .listen(PORT, () => {
+    console.log(`Health server listening on ${PORT}`);
+  });
+
 const { Client, GatewayIntentBits, Events } = require('discord.js');
 const { ephemeralEmoji } = require('./utils/emoji');
 const mongoose = require('mongoose');
@@ -343,3 +360,7 @@ client.on('interactionCreate', async (interaction) => {
 
 process.on('unhandledRejection', (err) => console.error('Unhandled rejection:', err));
 process.on('uncaughtException', (err) => console.error('Uncaught exception:', err));
+
+process.on('unhandledRejection', (err) => console.error('Unhandled rejection:', err));
+process.on('uncaughtException', (err) => console.error('Uncaught exception:', err));
+
