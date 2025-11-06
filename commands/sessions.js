@@ -129,10 +129,20 @@ module.exports = {
 				{
 					headers: {
 						'server-key': client.config.PRC_KEY,
-						'Content-Type': 'application/json'
+						'Content-Type': 'application/json',
+						'Accept': '*/*'
 					},
 					timeout: AXIOS_TIMEOUT_MS
-				}).catch(err => console.warn('sessions shutdown: PRC announce failed:', err?.message || err));
+				}).catch(err => {
+					const code = err?.response?.status;
+					const body = err?.response?.data;
+					const retryAfter = err?.response?.headers?.['retry-after'];
+					console.warn('sessions shutdown: PRC announce failed:',
+						code ? `status=${code}` : (err?.message || err),
+						body ? `body=${JSON.stringify(body).slice(0,300)}` : '',
+						retryAfter ? `retry-after=${retryAfter}` : ''
+					);
+				});
 
 				setTimeout(() => {
 					axios.post('https://api.policeroleplay.community/v1/server/command', {
@@ -141,10 +151,20 @@ module.exports = {
 					{
 						headers: {
 							'server-key': client.config.PRC_KEY,
-							'Content-Type': 'application/json'
+							'Content-Type': 'application/json',
+							'Accept': '*/*'
 						},
 						timeout: AXIOS_TIMEOUT_MS
-					}).catch(err => console.warn('sessions shutdown: PRC kick failed:', err?.message || err));
+					}).catch(err => {
+						const code = err?.response?.status;
+						const body = err?.response?.data;
+						const retryAfter = err?.response?.headers?.['retry-after'];
+						console.warn('sessions shutdown: PRC kick failed:',
+							code ? `status=${code}` : (err?.message || err),
+							body ? `body=${JSON.stringify(body).slice(0,300)}` : '',
+							retryAfter ? `retry-after=${retryAfter}` : ''
+						);
+					});
 				}, 1000 * 60 * 2);
 				break;
 			
