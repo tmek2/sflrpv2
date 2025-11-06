@@ -21,8 +21,8 @@ module.exports = {
       const leavevoteCount = sessionVotes.size;
       const leavepollVoteButton = new ButtonBuilder()
         .setCustomId(`sessionVote:button_${sessionId}_${votes}`)
-        .setLabel(`${leavevoteCount}/${votes}`)
-        .setStyle(ButtonStyle.Secondary);
+        .setLabel(`Vote (${leavevoteCount}/${votes})`)
+        .setStyle(ButtonStyle.Success);
 
       const leavepollViewVoteButton = new ButtonBuilder()
         .setCustomId(`sessionView:button_${sessionId}_${votes}`)
@@ -38,8 +38,8 @@ module.exports = {
       const joinvoteCount = sessionVotes.size;
       const joinpollVoteButton = new ButtonBuilder()
         .setCustomId(`sessionVote:button_${sessionId}_${votes}`)
-        .setLabel(`${joinvoteCount}/${votes}`)
-        .setStyle(ButtonStyle.Secondary);
+        .setLabel(`Vote (${joinvoteCount}/${votes})`)
+        .setStyle(ButtonStyle.Success);
 
       const joinpollViewVoteButton = new ButtonBuilder()
         .setCustomId(`sessionView:button_${sessionId}_${votes}`)
