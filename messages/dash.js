@@ -79,13 +79,13 @@ async function sendPanel(channel, member) {
       {
         name: "<:generalsupport:1434987840118460416> General Support",
         value:
-          ">>> <:sflrpbullet:1434856480707969025> General Inquiries\n<:sflrpbullet:1434856480707969025> Community Concerns\n<:sflrpbullet:1434856480707969025> Department Questions\n<:sflrpbullet:1434856480707969025> Information",
+          ">>> <:sflrpbullet2:1435684662314930216> General Inquiries\n<:sflrpbullet2:1435684662314930216> Community Concerns\n<:sflrpbullet2:1435684662314930216> Department Questions\n<:sflrpbullet2:1435684662314930216> Information",
         inline: true,
       },
       {
         name: "<:settingsflrp:1434930873584582748> Management Support",
         value:
-          ">>> <:sflrpbullet:1434856480707969025> Reports\n<:sflrpbullet:1434856480707969025> Claiming Perks\n<:sflrpbullet:1434856480707969025> Punishment Appeal\n<:sflrpbullet:1434856480707969025> Partnerships",
+          ">>> <:sflrpbullet2:1435684662314930216> Reports\n<:sflrpbullet2:1435684662314930216> Claiming Perks\n<:sflrpbullet2:1435684662314930216> Punishment Appeal\n<:sflrpbullet2:1435684662314930216> Partnerships",
         inline: true,
       }
     );
