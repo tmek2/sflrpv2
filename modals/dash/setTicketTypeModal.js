@@ -21,7 +21,12 @@ module.exports = {
   async execute(interaction) {
     try {
       const member = interaction.member;
-      const allowedRoles = [SUPPORT_ROLE_ID, ROLE_GENERAL_ID, ROLE_MANAGEMENT_ID].filter(Boolean);
+      // Support multiple role IDs provided via commas or spaces
+      const allowedRoles = [
+        ...String(SUPPORT_ROLE_ID).split(/[,\s]+/),
+        ...String(ROLE_GENERAL_ID).split(/[,\s]+/),
+        ...String(ROLE_MANAGEMENT_ID).split(/[,\s]+/)
+      ].filter(Boolean);
       const hasSupportRole = allowedRoles.some((rid) => member.roles.cache.has(rid));
       if (!hasSupportRole) {
         return interaction.reply({ content: `${ephemeralEmoji('permission')} Only support staff can rename the ticket.`, flags: MessageFlags.Ephemeral });
