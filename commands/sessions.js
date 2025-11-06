@@ -31,6 +31,7 @@ const SESSIONS_CHANNEL_ID = process.env.SESSIONS_CHANNEL_ID || ''; // Channel wh
 const SESSIONS_PING_ROLE_ID = process.env.SESSIONS_PING_ROLE_ID || ''; // Role to ping in boost/poll/start
 const SESSIONS_SHUTDOWN_ROLE_ID = process.env.SESSIONS_SHUTDOWN_ROLE_ID || ''; // Role shown in shutdown description
 const SESSIONS_REQUIRED_ROLE_ID = process.env.SESSIONS_REQUIRED_ROLE_ID || ''; // Role required to use /sessions
+const SessionStatusState = require('../models/sessionStatusState');
 
 module.exports = {
 	data: new SlashCommandBuilder()
@@ -82,11 +83,27 @@ module.exports = {
 			case 'shutdown':
 				client.activePollId = null;
 
-				// Attempt to clear recent messages, but don't block on failure
+				// Attempt to clear recent messages, but do NOT delete the Session Status panel
+				// and avoid deleting pinned messages. If the panel lives in this channel,
+				// we exclude its messageId from deletion.
 				try {
-					await channel.bulkDelete(100);
+					let panelMsgId = null;
+					try {
+						const state = await SessionStatusState.findOne({ key: 'default' }).catch(() => null);
+						if (state && state.channelId === channel.id) panelMsgId = state.messageId || null;
+					} catch {}
+
+					const recent = await channel.messages.fetch({ limit: 100 }).catch(() => null);
+					if (recent && recent.size) {
+						for (const [, m] of recent) {
+							if (panelMsgId && m.id === panelMsgId) continue; // keep the panel message
+							if (m.pinned) continue; // keep pinned messages
+							if (!m.deletable) continue;
+							try { await m.delete(); } catch {}
+						}
+					}
 				} catch (err) {
-					console.warn('sessions shutdown: bulkDelete failed:', err?.message || err);
+					console.warn('sessions shutdown: selective delete failed:', err?.message || err);
 				}
 
                 // Mention role from .env if provided; otherwise use a generic label
