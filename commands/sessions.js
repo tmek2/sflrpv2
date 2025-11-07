@@ -112,7 +112,7 @@ module.exports = {
                     embeds: [
                         new EmbedBuilder()
                             .setTitle('Session Shutdown')
-                            .setDescription(`The in-game server is currently shutdown. Please refrain from joining without staff permission. Doing so can and will result in moderation. You can obtain ${shutdownRoleMention} with the button below.`)
+                            .setDescription(`The in-game server is currently shutdown. Please refrain from joining without staff permission. Doing so can and will result in moderation.`)
                             .setColor('#fb2c04')
                             .setAuthor({ name: `@${user.username}`, iconURL: user.displayAvatarURL() })
                             .setImage(bannerFor('shutdown'))
@@ -320,3 +320,4 @@ module.exports = {
 		}
 	}
 }
+
