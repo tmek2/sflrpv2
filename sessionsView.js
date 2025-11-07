@@ -14,7 +14,7 @@ module.exports = {
 
     const sessionVotes = client.sessions.get(sessionId) || new Map();
     const voters = [...sessionVotes.values()]
-      .map(v => `<:Dot:1382411964432650281> <@${v.user.id}>`)
+      .map(v => `<:sflrpbullet:1434856480707969025> <@${v.user.id}>`)
       .join('\n') || 'No votes yet.';
 
     await interaction.editReply({
@@ -27,4 +27,5 @@ module.exports = {
       ]
     });
 	}
+
 }
