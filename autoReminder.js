@@ -5,8 +5,8 @@ const GLOBAL_EMBED_COLOR = process.env.GLOBAL_EMBED_COLOR || '#fc2f56';
 const COLOR_HEX = GLOBAL_EMBED_COLOR || process.env.DASH_COLOR || '#2b2d31ff';
 const IMAGE_URL = process.env.REMINDER_IMAGE_URL || process.env.DASH_IMAGE_URL || '';
 const REMINDER_CHANNEL_ID = process.env.REMINDER_CHANNEL_ID || '';
-const REMINDER_INTERVAL_MS = Number(process.env.REMINDER_INTERVAL_MS || 86_400_000);
-const REMINDER_INITIAL_DELAY_MS = Number(process.env.REMINDER_INITIAL_DELAY_MS || 86_400_000);
+const REMINDER_INTERVAL_MS = Number(process.env.REMINDER_INTERVAL_MS || 43_200_000);
+const REMINDER_INITIAL_DELAY_MS = Number(process.env.REMINDER_INITIAL_DELAY_MS || 43_200_000);
 
 async function sendReminder(client) {
   try {
@@ -41,11 +41,11 @@ async function sendReminder(client) {
           value: '**Waiting for a session?** Jump into ⁠<#1370848317059239969>, earn cash, flex your balance, and unlock awesome perks!'
         },
         {
-          name: '<:ticketsflrp:1434930876969386014> |  Need Assistance?',
+          name: '<:ticketsflrp:1434930876969386014> | Assistance',
           value: '**Got a question or issue?** Visit ⁠<#1370856943136018432> and open a ticket. Our support team will be with you shortly.'
         },
         {
-          name: '<:diamonds:1435328269539868782> |  Elevate Your Experience',
+          name: '<:diamonds:1435328269539868782> | Elevate Your Experience',
           value: '**Looking to elevate your experience?** Explore perks and exclusives in ⁠<#1370851986525913098>!'
         },
         {
