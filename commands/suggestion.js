@@ -9,6 +9,10 @@ const {
 const SuggestionsModel = require("../models/suggestionModel");
 const { ephemeralEmoji } = require("../utils/emoji");
 
+// Static suggestion panel images (top and bottom)
+const SUGGESTION_TOP_IMAGE_URL = 'https://media.discordapp.net/attachments/1430646260032999465/1437470652847100006/bannerfirebackground.png?ex=69135c5e&is=69120ade&hm=4d435bb663b124c028ca020fa0504604ed9da278b3a60ffd10e9dc2ef2dd0b7d&=&format=webp&quality=lossless&width=1305&height=419';
+const SUGGESTION_BOTTOM_IMAGE_URL = 'https://media.discordapp.net/attachments/1430646260032999465/1434222027782492170/bottom_sflrp.png?ex=6912bf99&is=69116e19&hm=a360c8d3d108559bd0cd6ede67539367b9f8347f7aa905b566024e44342c7aa9&=&format=webp&quality=lossless&width=1201&height=66';
+
 module.exports = {
   data: new SlashCommandBuilder()
     .setName("suggest")
@@ -31,20 +35,22 @@ module.exports = {
       suggestionNumber = lastSuggestion.suggestionNumber + 1;
     }
 
-    const embed = new EmbedBuilder()
-      .setTitle(`Suggestion #${suggestionNumber}`)
+    const colorHex = process.env.GLOBAL_EMBED_COLOR || "#fc2f56";
+    // Top image embed (image-only, same color)
+    const topImageEmbed = new EmbedBuilder()
+      .setColor(colorHex)
+      .setImage(SUGGESTION_TOP_IMAGE_URL);
+
+    // Content embed (title, text, author) without thumbnail, with bottom image
+    const contentEmbed = new EmbedBuilder()
+      .setTitle(`<:greatidea:1434932010777968780> Suggestion #${suggestionNumber}`)
       .setDescription(`**Suggestion:**\n${suggestion}`)
-      .setColor(process.env.GLOBAL_EMBED_COLOR || "#fc2f56")
+      .setColor(colorHex)
       .setAuthor({
         name: `${interaction.user.username}`,
         iconURL: interaction.user.displayAvatarURL(),
       })
-      .setThumbnail(interaction.guild.iconURL({ dynamic: true, size: 512 }));
-
-    const imageUrl = process.env.SUGGESTION_IMAGE_URL;
-    if (imageUrl) {
-      embed.setImage(imageUrl);
-    }
+      .setImage(SUGGESTION_BOTTOM_IMAGE_URL);
 
     const row = new ActionRowBuilder().addComponents(
       new ButtonBuilder()
@@ -69,7 +75,7 @@ module.exports = {
     }
 
     const message = await channel.send({
-      embeds: [embed],
+      embeds: [topImageEmbed, contentEmbed],
       components: [row],
     });
 
@@ -181,3 +187,6 @@ module.exports = {
     });
   },
 };
+
+};
+
