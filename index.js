@@ -52,6 +52,7 @@ const sessions = require('./commands/sessions.js');
 const reminder = require('./commands/reminder.js');
 const suggestion = require('./commands/suggestion.js');
 const ping = require('./commands/ping.js');
+const say = require('./commands/say.js');
 const sessionsVote = require('./sessionsVote.js');
 const sessionsView = require('./sessionsView.js');
 const sessionsRole = require('./sessionsRole.js');
@@ -129,6 +130,7 @@ client.config = { PRC_KEY };
       // Utilities
       help.data,
       ping.data,
+      say.data,
       reminder.data,
       suggestion.data,
       userinfo.data,
