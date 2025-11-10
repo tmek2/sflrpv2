@@ -4,7 +4,7 @@ const {
   ActionRowBuilder,
   ButtonBuilder,
   ButtonStyle,
-  MessageFlags,
+  MessageFlags
 } = require("discord.js");
 const SuggestionsModel = require("../models/suggestionModel");
 const { ephemeralEmoji } = require("../utils/emoji");
@@ -187,6 +187,3 @@ module.exports = {
     });
   },
 };
-
-};
-
